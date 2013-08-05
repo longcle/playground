@@ -442,8 +442,8 @@ class WP_JSON_RPC_Server extends IXR_Server
 					));
 				}
 				
-				$$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
-				$beauty['address'] = $$beauty_info_option['address'];
+				$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
+				$beauty['address'] = $beauty_info_option['address'];
 				$beauty['url'] = $beauty_info_option['web'];
 				$beauty['phone'] = $beauty_info_option['telephone'];
 				$beauty['latitude'] = $beauty_info_option['gpsLatitude'];
@@ -515,7 +515,7 @@ class WP_JSON_RPC_Server extends IXR_Server
 				));
 			}
 			
-			$$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
+			$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
 			$beauty['address'] = $beauty_info_option['address'];
 			$beauty['url'] = $beauty_info_option['web'];
 			$beauty['phone'] = $beauty_info_option['telephone'];
@@ -1180,6 +1180,14 @@ class WP_JSON_RPC_Server extends IXR_Server
 						$ret_post = $this->getClub($post->ID);
 						$ret_post['type'] = 'club';
 						break;
+					case 'xem':
+						$ret_post = $this->getWatching($post->ID);
+						$ret_post['type'] = 'xem';
+						break;
+					case 'beauty':
+						$ret_post = $this->getBeauty($post->ID);
+						$ret_post['type'] = 'beauty';
+						break;
 				}
 			}
 		}
@@ -1437,6 +1445,83 @@ class WP_JSON_RPC_Server extends IXR_Server
 		}
 		return $friends;
 	}
+	
+	// function searchNearBy($args){
+	// 	$latitude = $args[0];
+	// 	$longitude = $args[1];
+	// 	$radius = $args[2];
+	// 	
+	// 	$query = array(
+	// 		'post_type'=>array('ait-dir-item'),
+	// 		'numberposts'=>-1,
+	// 		'offset'=>0,
+	// 		'post_status'=> 'publish'
+	// 	);
+	// 	
+	// 	$posts = get_posts($query);
+	// 	
+	// 	return $posts;
+	// 
+	// 	$search_results = array();
+	// 	foreach ($posts as $post){
+	// 		$optionsDir = get_post_meta($post->ID, '_ait-dir-item', true);
+	//             //$distance = isPointInRadius($radius, $latitude, $longitude, $optionsDir['gpsLatitude'], $optionsDir['gpsLongitude']);
+	//             $distance = getDistance($radius, $latitude, $longitude, $optionsDir['gpsLatitude'], $optionsDir['gpsLongitude']);
+	// 		if ($distance){ // not false
+	//             //get events with exp_date <= 7
+	//                 $query_event = array(
+	//                     'post_type' => 'ait-dir-event',
+	//                     'numberposts' => -1,
+	//                     'offset' => 0,
+	//                     'meta_value' => $post->ID,
+	//                     'post_status' => 'publish'
+	//                 );
+	//                 $events = get_posts($query_event);
+	//                 foreach ($events as $event) {
+	//                     $optionEvent = get_post_meta($event->ID);
+	//                     $exp_date = $event->pg_event_expire_date;
+	//                     $curr_date = date('Y-m-d');
+	//                     $days = floor( (abs(strtotime($exp_date) - strtotime($curr_date)))/(60*60*24) );
+	//                     if ($days >= 0 && $days <= 7) {
+	//                         $place = $this->getEvent($event->ID);
+	//                         $place['distance'] = $distance;
+	//                         array_push($search_results, $place);
+	//                     }
+	//                 }
+	// 			$category = wp_get_post_terms($post->ID,'ait-dir-item-category',array('fields'=>'slugs'));
+	// 			switch ($category[0]){
+	// 				case 'nha-hang':
+	// 					$place = $this->getRestaurant($post->ID);
+	// 					$place['type'] = 'restaurant';
+	//                         $place['distance'] = $distance;
+	// 					array_push($search_results,$place);
+	// 					break;
+	// 				case 'mua-sam':
+	// 					$place = $this->getShopping($post->ID);
+	// 					$place['type'] = 'shopping';
+	//                         $place['distance'] = $distance;
+	// 					array_push($search_results,$place);
+	// 					break;
+	// 				case 'barsclubs':
+	// 					$place = $this->getClub($post->ID);
+	// 					$place['type'] = 'club';
+	//                         $place['distance'] = $distance;
+	// 					array_push($search_results,$place);
+	// 					break;
+	//                     default: {
+	//                         if (in_array($category[0], array('xem', 'beauty', 'shows', 'cinemas'))) {
+	//                             $place = $this->getWatching($post->ID);
+	//                             $place['type'] = 'watching';
+	//                             $place['distance'] = $distance;
+	//                             array_push($search_results,$place);
+	//                         }
+	//                         break;
+	//                     }
+	// 			}
+	// 		}
+	// 	}
+	// 	return $search_results;
+	// }
 	
 	function searchNearBy($args){
 		$latitude = $args[0];

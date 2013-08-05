@@ -1,4 +1,6 @@
 var clubList = [];
+var watchingList = [];
+var beautyList = [];
 var restaurantList = [];
 var shoppingList = [];
 var eventList = [];
@@ -102,7 +104,8 @@ function parseEvent(post){
 	return meta;
 }
 
-function external_link(link){
+function external_link(link) {
+    link = link == null ? "" : link;
 	if (link.indexOf('http://') != 0){
 		return 'http://' + link;
 	} else {

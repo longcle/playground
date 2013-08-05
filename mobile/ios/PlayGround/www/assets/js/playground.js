@@ -1,4 +1,6 @@
 var clubList = [];
+var watchingList = [];
+var beautyList = [];
 var restaurantList = [];
 var shoppingList = [];
 var eventList = [];
@@ -102,7 +104,8 @@ function parseEvent(post){
 	return meta;
 }
 
-function external_link(link){
+function external_link(link) {
+    link = link == null ? "" : link;
 	if (link.indexOf('http://') != 0){
 		return 'http://' + link;
 	} else {
@@ -174,10 +177,8 @@ function normalize(str) {
   str= str.replace(/-+-/g,"-");
   str= str.replace(/^\-+|\-+$/g,"");  
   return str;  
-  }
+  }   
   
-
-
 //get new messge
 function getNewMessages(){
 	wpJSON.request(
@@ -284,14 +285,14 @@ function onContactError(contactError) {
 	console.log('onError!');
 }
 
-function updateMessageSenderName(){
+function updateMessageSenderName(){	
 	msgList.forEach(function(msg){
 		var contact_name = msg.sender;
 		contactList.forEach(function(contact){
 			if (contact.phoneNumbers != null){
 				contact.phoneNumbers.forEach(function(number){
-					if (number.value.replace(/\s/g,'').replace(/-/g,'').replace(/\(|\)/g, '') ==
-						contact_name.replace(/\s/g,'').replace(/-/g,'').replace(/\(|\)/g, '')){
+					if (number.value.replace(/\s/g,'').replace(/-/g,'').replace(/\(|\)/g, "") ==
+						contact_name.replace(/\s/g,'').replace(/-/g,'').replace(/\(|\)/g, "")){
 						contact_name = contact.name.formatted;
 					}
 				});
