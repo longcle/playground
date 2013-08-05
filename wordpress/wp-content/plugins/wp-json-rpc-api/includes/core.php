@@ -268,6 +268,14 @@ class WP_JSON_RPC_Server extends IXR_Server
 	//start messing	
     
     function getWatchingList($args){
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
         $event_types = array(
             'xem', 'cinemas', 'shows'
         );
@@ -275,7 +283,7 @@ class WP_JSON_RPC_Server extends IXR_Server
         $query = array(
 			'post_type'=> array('ait-dir-item','ait-dir-event'),
 			'numberposts'=>10,
-			'offset'=>0,
+			'offset'=>$offset,
 			'post_status'=> 'publish',
             'orderby' => 'post_id',
             'order' => 'desc',
@@ -369,11 +377,19 @@ class WP_JSON_RPC_Server extends IXR_Server
 	}
     
     function getBeautyList($args){
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
 		$posts = get_posts(
 			array(
 				'post_type'=>'ait-dir-item',
 				'numberposts'=>10,
-				'offset'=>0,
+				'offset'=>$offset,
 				'post_status'=> 'publish',
 				'tax_query'=>array(
 					array(
@@ -442,8 +458,8 @@ class WP_JSON_RPC_Server extends IXR_Server
 					));
 				}
 				
-				$$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
-				$beauty['address'] = $$beauty_info_option['address'];
+				$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
+				$beauty['address'] = $beauty_info_option['address'];
 				$beauty['url'] = $beauty_info_option['web'];
 				$beauty['phone'] = $beauty_info_option['telephone'];
 				$beauty['latitude'] = $beauty_info_option['gpsLatitude'];
@@ -515,7 +531,7 @@ class WP_JSON_RPC_Server extends IXR_Server
 				));
 			}
 			
-			$$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
+			$beauty_info_option = get_post_meta($post->ID, '_ait-dir-item', true);
 			$beauty['address'] = $beauty_info_option['address'];
 			$beauty['url'] = $beauty_info_option['web'];
 			$beauty['phone'] = $beauty_info_option['telephone'];
@@ -527,11 +543,19 @@ class WP_JSON_RPC_Server extends IXR_Server
 	}
     
 	function getClubList($args){
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
 		$posts = get_posts(
 			array(
 				'post_type'=>'ait-dir-item',
 				'numberposts'=>10,
-				'offset'=>0,
+				'offset'=>$offset,
 				'post_status'=> 'publish',
 				'tax_query'=>array(
 					array(
@@ -674,11 +698,20 @@ class WP_JSON_RPC_Server extends IXR_Server
 	}
 	
 	function getRestaurantList($args){
+		$this->escape( $args );
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
 		$posts = get_posts(
 			array(
 				'post_type'=>'ait-dir-item',
 				'numberposts'=>10,
-				'offset'=>0,
+				'offset'=>$offset,
 				'post_status'=> 'publish',
 				'tax_query'=>array(
 					array(
@@ -832,11 +865,19 @@ class WP_JSON_RPC_Server extends IXR_Server
 	}
 	
 	function getShoppingList($args){
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
 		$posts = get_posts(
 			array(
 				'post_type'=>'ait-dir-item',
 				'numberposts'=>10,
-				'offset'=>0,
+				'offset'=>$offset,
 				'post_status'=> 'publish',
 				'tax_query'=>array(
 					array(
@@ -980,7 +1021,15 @@ class WP_JSON_RPC_Server extends IXR_Server
 	}
 	
 	function getEventList($args){
-		$posts = get_posts(array('post_type'=>'ait-dir-event','numberposts'=>10,'offset'=>0,'post_status'=> 'publish'));
+		$offset = 0;
+		if($args) {
+			$offset = $args;
+		}
+		else {
+			$offset = 0;
+		}
+		
+		$posts = get_posts(array('post_type'=>'ait-dir-event','numberposts'=>10,'offset'=>$offset,'post_status'=> 'publish'));
 		$event_list = array();
 		if ($posts){
 			$term_list = array(
@@ -1179,6 +1228,14 @@ class WP_JSON_RPC_Server extends IXR_Server
 					case 'barsclubs':
 						$ret_post = $this->getClub($post->ID);
 						$ret_post['type'] = 'club';
+						break;
+					case 'xem':
+						$ret_post = $this->getWatching($post->ID);
+						$ret_post['type'] = 'xem';
+						break;
+					case 'beauty':
+						$ret_post = $this->getBeauty($post->ID);
+						$ret_post['type'] = 'beauty';
 						break;
 				}
 			}

@@ -11,11 +11,47 @@
 	</div><!-- /content -->
 	
 	<script type="text/javascript">
+	    var page = 0;
+	    function loadMore() {
+	        showLoading();
+	        wpJSON.request(
+			   'pg.getEventList',
+			   { offset: (page + 1) * 10 },
+			   function(result) {
+			       page++;
+			       result.forEach(function(post) {
+			            $(
+							'<li>' +
+								'<a href="eventdetail.html?post_id=' + post.id + '">' +
+									'<img src="' + post.thumbnail[0] + '"/>' +
+									'<h2>' + post.name + '</h2>' +
+									'<p><strong>' + post.venue.name + '</strong> - ' + post.venue.address + '</p>' +
+									'<p class="ui-li-aside"><strong>' + post.date + '</strong><br/>' + post.time + '</p>' +
+								'</a>' +
+							'</li>'
+						).appendTo($('ul#eventlist'));
+			            eventList.push(post);
+			       });
+			       $('ul#eventlist').listview('refresh');
+			       hideLoading();
+			       $(window).scroll(function() {
+			           if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+			               $(window).unbind('scroll');
+			               loadMore();
+			           }
+			       });
+			   },
+			   function(code, error, data) {
+			       console.log('error: ' + error);
+			   }
+			);
+	    }
+
 		function downloadEventList(){
 			showLoading();
 			wpJSON.request(
 			   'pg.getEventList',
-			   {},
+			   { offset: 0 },
 			   function (result) {
 					eventList = result;
 					$('ul#eventlist').empty();
@@ -33,6 +69,12 @@
 					});
 					$('ul#eventlist').listview('refresh');
 					hideLoading();
+					$(window).scroll(function() {
+					    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+					        $(window).unbind('scroll');
+					        loadMore();
+					    }
+					});
 			   },
 			   function( code, error, data ) {
 					console.log('error: ' + error);
@@ -73,6 +115,12 @@
 					);
 				});
 				$('ul#eventlist').listview('refresh');
+				$(window).scroll(function() {
+				    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+				        $(window).unbind('scroll');
+				        loadMore();
+				    }
+				});
 			}
 		});
 		

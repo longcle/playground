@@ -10,11 +10,45 @@
 	</div><!-- /content -->
 	
 	<script type="text/javascript">
+	    var page = 0;
+	    function loadMore() {
+	        showLoading();
+	        wpJSON.request(
+			   'pg.getClubList',
+			   { offset: (page + 1) * 10 },
+			   function(result) {
+			       page++;
+			       result.forEach(function(post) {
+			            $(
+							'<li>' +
+								'<a href="clubdetail.html?post_id=' + post.id + '">' +
+									'<img src="' + post.thumbnail[0] + '"/>' +
+									'<h2>' + post.name + '</h2>' +
+									'<p>' + post.address + '</p>' +
+								'</a>' +
+							'</li>'
+						).appendTo($('ul#clublist'));
+			            clubList.push(post);
+			       });
+			       $('ul#clublist').listview('refresh');
+			       hideLoading();
+			       $(window).scroll(function() {
+			           if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+			               $(window).unbind('scroll');
+			               loadMore();
+			           }
+			       });
+			   },
+			   function(code, error, data) {
+			       console.log('error: ' + error);
+			   }
+			);
+	    }
 		function downloadClubList(){
 			showLoading();
 			wpJSON.request(
 			   'pg.getClubList',
-			   {},
+			   { offset: 0 },
 			   function (result) {
 					clubList = result;
 					$('ul#clublist').empty();
@@ -31,6 +65,12 @@
 					});
 					$('ul#clublist').listview('refresh');
 					hideLoading();
+					$(window).scroll(function() {
+					    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+					        $(window).unbind('scroll');
+					        loadMore();
+					    }
+					});
 			   },
 			   function( code, error, data ) {
 					console.log('error: ' + error);
@@ -68,6 +108,12 @@
 					);
 				});
 				$('ul#clublist').listview('refresh');
+				$(window).scroll(function() {
+				    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+				        $(window).unbind('scroll');
+				        loadMore();
+				    }
+				});
 			}
 		});
 		

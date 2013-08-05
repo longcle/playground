@@ -1,36 +1,36 @@
-<div data-role="page" id="shoppinglistpage">
+<div data-role="page" id="beautylistpage">
 	<div data-role="header" data-position="fixed" data-theme="b">
 		<a href="#" data-rel="back" data-role="button" data-icon="home" class="ui-icon-nodisc" data-theme="a" data-iconshadow="false" data-iconpos="notext" data-inline="true"></a>
-		<h1>Mua sắm</h1>
+		<h1>Beauty salon</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<ul data-role="listview" id="shoppinglist">
+		<ul data-role="listview" id="beautylist">
 		</ul>
 	</div><!-- /content -->
-
+	
 	<script type="text/javascript">
 	    var page = 0;
 	    function loadMore() {
 	        showLoading();
 	        wpJSON.request(
-			   'pg.getShoppingList',
+			   'pg.getBeautyList',
 			   { offset: (page + 1) * 10 },
 			   function(result) {
 			       page++;
 			       result.forEach(function(post) {
 			            $(
 							'<li>' +
-								'<a href="shoppingdetail.html?post_id=' + post.id + '">' +
+								'<a href="beautydetail.html?post_id=' + post.id + '">' +
 									'<img src="' + post.thumbnail[0] + '"/>' +
 									'<h2>' + post.name + '</h2>' +
-									'<p>' + post.address + '</p>' +
+									'<p>' + post.address.toString() + '</p>' +
 								'</a>' +
 							'</li>'
-						).appendTo($('ul#shoppinglist'));
-			            shoppingList.push(post);
+						).appendTo($('ul#beautylist'));
+			            beautyList.push(post);
 			       });
-			       $('ul#shoppinglist').listview('refresh');
+			       $('ul#beautylist').listview('refresh');
 			       hideLoading();
 			       $(window).scroll(function() {
 			           if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
@@ -43,42 +43,43 @@
 			       console.log('error: ' + error);
 			   }
 			);
-	    }
-		function downloadShoppingList(){
+		}
+	    
+		function downloadBeautyList(){
 			showLoading();
 			wpJSON.request(
-			   'pg.getShoppingList',
+			   'pg.getBeautyList',
 			   { offset: 0 },
 			   function (result) {
-					shoppingList = result;
-					$('ul#shoppinglist').empty();
-					shoppingList.forEach(function(post){
-						$('ul#shoppinglist').append(
+			       beautyList = result;
+			       $('ul#beautylist').empty();
+			       beautyList.forEach(function (post) {
+			           $('ul#beautylist').append(
 							'<li>' +
-								'<a href="shoppingdetail.html?post_id=' + post.id + '">' + 
+								'<a href="beautydetail.html?post_id=' + post.id + '">' +
 									'<img src="' + post.thumbnail[0] + '"/>' +
 									'<h2>' + post.name + '</h2>' +
-									'<p>' + post.address + '</p>' +
+									'<p>' + post.address.toString() + '</p>' +
 								'</a>' +
 							'</li>'
 						);
-					});
-					$('ul#shoppinglist').listview('refresh');
-					hideLoading();
-					$(window).scroll(function() {
-					    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
-					        $(window).unbind('scroll');
-					        loadMore();
-					    }
-					});
+			       });
+			       $('ul#beautylist').listview('refresh');
+			       hideLoading();
+			       $(window).scroll(function() {
+			           if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+			               $(window).unbind('scroll');
+			               loadMore();
+			           }
+			       });
 			   },
-			   function( code, error, data ) {
-					console.log('error: ' + error);
+			   function (code, error, data) {
+			       console.log('error: ' + error);
 			   }
 			);
 		}
-		
-		$('div#shoppinglistpage').on('pageshow',function(){
+
+		$('div#beautylistpage').on('pageshow', function () {
 			$('#togglesearchbtn').click(function(){
 				$('ul#searchsection').slideDown();
 			});
@@ -89,17 +90,17 @@
 			
 			$('a#search-submit').click(function(){
 				var searchTerm = $('input#search-term').val().replace(/\s/g,'+');
-				$(this).attr('href','search.html?type=shopping&s=' + searchTerm);
+				$(this).attr('href','search.html?type=beauty&s=' + searchTerm);
 			});
-			
-			if (shoppingList.length == 0){
-				downloadShoppingList();
+
+            if (beautyList.length == 0) {
+                downloadBeautyList();
 			} else {
-				$('ul#shoppinglist').empty();
-				shoppingList.forEach(function(post){
-					$('ul#shoppinglist').append(
+                $('ul#beautylist').empty();
+                beautyList.forEach(function (post) {
+				    $('ul#beautylist').append(
 						'<li>' +
-							'<a href="shoppingdetail.html?post_id=' + post.id + '">' + 
+							'<a href="beautydetail.html?post_id=' + post.id + '">' + 
 								'<img src="' + post.thumbnail[0] + '"/>' +
 								'<h2>' + post.name + '</h2>' +
 								'<p>' + post.address + '</p>' +
@@ -107,7 +108,7 @@
 						'</li>'
 					);
 				});
-				$('ul#shoppinglist').listview('refresh');
+				$('ul#beautylist').listview('refresh');
 				$(window).scroll(function() {
 				    if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
 				        $(window).unbind('scroll');
@@ -116,10 +117,10 @@
 				});
 			}
 		});
-		
-		$('a#shoppinglistrefreshbtn').click(function(){
-			shoppingList = [];
-			downloadShoppingList();
+
+        $('a#watchinglistrefreshbtn').click(function () {
+		    beautyList = [];
+			downloadBeautyList();
 		});
 	</script>
-</div><!-- /page#shoppinglist -->
+</div><!-- /page#beautylist -->
